@@ -53,34 +53,41 @@ int countPairs2(int *arr, int len, int value) {
   return count;
 }
 
-int binarySearch(int *arr, int left, int right, int target) {
+int countOccurrences(int *arr, int left, int right, int target) {
+  if (left > right) return 0;
   int first = -1;
-  while (left <= right) {
-    int mid = left + (right - left) / 2;
+  int low = left, high = right;
+  while (low <= high) {
+    int mid = low + (high - low) / 2;
     if (arr[mid] >= target) {
       if (arr[mid] == target) first = mid;
-      right = mid - 1;
+      high = mid - 1;
     } else {
-      left = mid + 1;
+      low = mid + 1;
     }
   }
-  return first;
+  if (first == -1) return 0;
+  int last = -1;
+  low = first, high = right;
+  while (low <= high) {
+    int mid = low + (high - low) / 2;
+    if (arr[mid] <= target) {
+      if (arr[mid] == target) last = mid;
+      low = mid + 1;
+    } else {
+      high = mid - 1;
+    }
+  }
+  return last - first + 1;
 }
 
 int countPairs3(int *arr, int len, int value) {
+  std::sort(arr, arr + len);
   int count = 0;
   for (int i = 0; i < len; ++i) {
     int target = value - arr[i];
     if (target < arr[i]) continue;
-
-    int first = binarySearch(arr, i + 1, len - 1, target);
-    if (first != -1) {
-      int last = first;
-      while (last + 1 < len && arr[last + 1] == target) {
-        ++last;
-      }
-      count += last - first + 1;
-    }
+    count += countOccurrences(arr, i + 1, len - 1, target);
   }
   return count;
 }
