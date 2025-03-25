@@ -44,40 +44,13 @@ int countPairs2(int* arr, int len, int value) {
   }
   return count;
 }
-int countPairs3(int* arr, int len, int value) {
+int countPairs3(int *arr, int len, int value) {
   int count = 0;
   for (int i = 0; i < len; ++i) {
     int target = value - arr[i];
-    if (target < arr[i]) {
-      continue;
-    }
-    int low = i + 1;
-    int high = len - 1;
-    int first_pos = -1;
-    while (low <= high) {
-      int mid = low + (high - low) / 2;
-      if (arr[mid] >= target) {
-        high = mid - 1;
-      } else {
-        low = mid + 1;
-      }
-    }
-    first_pos = low;
-    low = i + 1;
-    high = len - 1;
-    int last_pos = -1;
-    while (low <= high) {
-      int mid = low + (high - low) / 2;
-      if (arr[mid] <= target) {
-        low = mid + 1;
-      } else {
-        high = mid - 1;
-      }
-    }
-    last_pos = high;
-    if (first_pos <= last_pos) {
-      count += (last_pos - first_pos + 1);
-    }
+    if (target < arr[i]) continue;
+    auto range = std::equal_range(arr + i + 1, arr + len, target);
+    count += range.second - range.first;
   }
   return count;
 }
